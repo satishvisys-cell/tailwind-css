@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum MailProvider {
+  GMAIL
+  OUTLOOK
+  SMTP
+}
+
+enum JobStatus {
+  DRAFT
+  POSTED
+}
+
+model MailAccount {
+  id           String       @id @default(cuid())
+  provider     MailProvider
+  email        String
+  accessToken  String?
+  refreshToken String?
+  smtpHost     String?
+  smtpPort     Int?
+  smtpUser     String?
+  smtpPass     String?
+  createdAt    DateTime     @default(now())
+  emails       Email[]
+
+  @@index([provider])
+  @@unique([provider, email])
+}
+
+model Email {
+  id            String      @id @default(cuid())
+  mailAccountId String
+  subject       String
+  bodyText      String      @db.Text
+  extracted     Boolean     @default(false)
+  receivedAt    DateTime
+  createdAt     DateTime    @default(now())
+  mailAccount   MailAccount @relation(fields: [mailAccountId], references: [id], onDelete: Cascade)
+  job           Job?
+
+  @@index([mailAccountId, receivedAt(sort: Desc)])
+}
+
+model Job {
+  id               String    @id @default(cuid())
+  emailId          String    @unique
+  emailHash        String    @unique
+  jobTitle         String?
+  clientName       String?
+  employmentType   String?
+  duration         String?
+  locationCity     String?
+  locationState    String?
+  remoteType       String?
+  experience       String?
+  skills           String[]
+  description      String?   @db.Text
+  responsibilities String?   @db.Text
+  qualifications   String?   @db.Text
+  contactName      String?
+  contactEmail     String?
+  contactPhone     String?
+  linkedinUrl      String?
+  status           JobStatus @default(DRAFT)
+  createdAt        DateTime  @default(now())
+  email            Email     @relation(fields: [emailId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt(sort: Desc)])
+}
+
+model JobQueue {
+  id        String   @id @default(cuid())
+  type      String
+  payload   Json
+  status    String   @default("pending")
+  attempts  Int      @default(0)
+  runAt     DateTime @default(now())
+  lockedAt  DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([status, runAt])
+}

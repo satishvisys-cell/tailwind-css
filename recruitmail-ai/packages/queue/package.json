@@ -1,0 +1,10 @@
+{
+  "name": "@recruitmail/queue",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "index.ts",
+  "dependencies": {
+    "@recruitmail/db": "1.0.0"
+  }
+}
