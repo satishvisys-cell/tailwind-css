@@ -1,0 +1,15 @@
+{
+  "name": "recruitmail-ai",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @recruitmail/web && npm run build -w @recruitmail/worker",
+    "dev": "npm run dev -w @recruitmail/web",
+    "prisma:generate": "npm run prisma:generate -w @recruitmail/db",
+    "prisma:push": "npm run prisma:push -w @recruitmail/db"
+  }
+}
