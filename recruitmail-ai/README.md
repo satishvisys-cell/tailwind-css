@@ -43,3 +43,10 @@ Open `http://localhost:3000`.
 - Single-user mode, no authentication.
 - No secrets are hardcoded.
 - Token refresh is handled for Google and Microsoft account fetches.
+
+## Operational Endpoints
+- `GET /api/health` - web + DB readiness check
+- `GET /api/jobs/:id` - retrieve a job
+- `PATCH /api/jobs/:id` - update job fields
+- `DELETE /api/jobs/:id` - delete job
+- `POST /api/jobs/:id/post` - move draft to posted
